@@ -1,8 +1,8 @@
 # LLM linter
 
-This is a general-purpose linter with rules base natural language powered by Large Language Model (LLM).
+This is a general-purpose linter with rules on natural language powered by the Large Language Model (LLM).
 
-TODO: embed a demo video here.
+TODO: Embedded a demo video here.
 
 ## Usage
 
@@ -15,8 +15,8 @@ cargo build --release
 
 ### Write rules
 
-You need to create linter rules file. For example `rules.md` is like this.
-`llm-lint-glob` is a special comment that specifies the target files. The range from the comment to the next comment is the target of the rule.
+You need to create a linter rules file. For example `rules.md` is like this.
+`llm-lint-glob` is a special comment that specifies the target files. The range from the comment to the next comment is the rule's target.
 
 **The performance of the LLM linter depends on rules quality**. You should write rules specifically, explicitly, and concisely. It's important to make anyones understand the rules without any previous knowledge.
 
@@ -44,7 +44,7 @@ You need to create linter rules file. For example `rules.md` is like this.
 
 ### Set secrets
 
-LLM linter needs following environment variables.
+LLM linter needs the following environment variables.
 **Recommend to limit the Open AI usage by web console.**
 
 - `OPENAI_API_KEY`

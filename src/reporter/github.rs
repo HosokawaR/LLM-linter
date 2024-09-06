@@ -47,7 +47,7 @@ impl GithubReporter {
 
     async fn comment(&self, indication: Indication) {
         let comment_request = &CommentRequest {
-            body: indication.message.clone(),
+            body: self.add_suffix(indication.message.clone()),
             commit_id: self.fetch_latest_commit_sha().await,
             path: indication.location.path.clone(),
             start_line: if indication.location.is_single_line() {
@@ -97,6 +97,10 @@ impl GithubReporter {
             .unwrap();
         debug!("pull.head.sha: {:?}", pull.head.sha);
         pull.head.sha
+    }
+
+    fn add_suffix(&self, message: String) -> String {
+        format!("{}\n\n{}", message, "Reported by [LLM linter](https://github.com/HosokawaR/LLM-linter)")
     }
 }
 

@@ -1,7 +1,6 @@
 use core::{LlmClient, PatchReader, Reporter};
 use std::env;
 
-
 mod core;
 mod llm_clients;
 mod patches;

@@ -100,7 +100,10 @@ impl GithubReporter {
     }
 
     fn add_suffix(&self, message: String) -> String {
-        format!("{}\n\n{}", message, "Reported by [LLM linter](https://github.com/HosokawaR/LLM-linter)")
+        format!(
+            "{}\n\n{}",
+            message, "Reported by [LLM linter](https://github.com/HosokawaR/LLM-linter)"
+        )
     }
 }
 

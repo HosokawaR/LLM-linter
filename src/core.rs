@@ -61,7 +61,7 @@ impl<L: LlmClient> Linter<L> {
 
             このパッチに対して以下のルールに違反している点がないか確認してください。
             以下のレビューで言及されたルールについてのみ指摘を行いなさい。
-            また指摘後には revaluation にその指摘が適切であるかどうかを記載しなさい。
+            また指摘後には revaluation に前述の指摘の内容が正しいかを、指摘文にかかれたこと一つ一つについて、パッチの内容と照らし合わせて適切かどうかを記載しなさい。
 
             指摘がいかなる場合も適切ならば kind を "error" にしなさい。
             指摘が場合によっては適切であるかもしれない場合は kind を "warning" にしなさい。
@@ -83,6 +83,7 @@ impl<L: LlmClient> Linter<L> {
                         "start_line": number
                         "end_line": number
                     }}
+                    "reevalution": string
                     "kind": "error" | "warning" | "cancel"
                 }}[]
             }}
@@ -93,14 +94,14 @@ impl<L: LlmClient> Linter<L> {
                 messages: [
                     {{
                         message: "XXX の箇所は YYY に変更してください。",
-                        reevalution: "実際に XXX が使用されているので、この指摘は適切である。",
                         location: {{ start_line: 10, end_line: 10 }},
+                        reevalution: "実際に XXX が使用されているので、YYY に変更する必要があり、コードは誤っているので、この指摘は適切である。",
                         kind: "error"
                     }},
                     {{
                         message: "XXX には必ず ZZZ をつけるようにしてください。",
-                        reevalution: "実際に ZZZ はついているので、この指摘は不適切である。",
                         location: {{ start_line: 20, end_line: 30 }},
+                        reevalution: "実際に ZZZ はついているので、コードは正しく、この指摘は不適切である。"
                         kind: "cancel"
                     }},
                 ]

@@ -10,13 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Setup Rust
-        run: |
-          rustup component add clippy
-          rustup component add rustfmt
-          rustup target add x86_64-unknown-linux-musl
       - name: Build
-        # use --target=x86_64-unknown-linux-musl 
         run: cargo build --release
       - name: Publish to GitHub Releases
         uses: softprops/action-gh-release@v2

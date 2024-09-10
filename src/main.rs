@@ -60,6 +60,15 @@ async fn main() {
         panic!("Failed to read patches: {}", e);
     });
 
+    let max_total_patch_lines =
+        env::var("MAX_TOTAL_PATCH_LINES").unwrap_or_else(|_| "5000".to_string());
+    if patches.total_lines() > max_total_patch_lines.parse().unwrap() {
+        panic!(
+            "Total patch lines exceeds the limit: {}",
+            max_total_patch_lines
+        );
+    }
+
     let indications = linter.lint(patches).await;
     let reporter = reporter::github::GithubReporter::new(
         secrecy::Secret::new(

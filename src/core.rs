@@ -175,6 +175,13 @@ impl Patches {
                 .collect(),
         })
     }
+
+    pub fn total_lines(&self) -> u64 {
+        self.all
+            .iter()
+            .map(|patch| patch.content.lines().count() as u64)
+            .sum()
+    }
 }
 
 #[derive(Clone, Debug)]

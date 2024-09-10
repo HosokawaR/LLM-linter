@@ -55,14 +55,19 @@ impl<L: LlmClient> Linter<L> {
         }
 
         Some(formatdoc! {r#"
-            以下は Git のパッチです。
+            これから提示する Git パッチに対して以下のルールに違反している可能性がある箇所を見つけ、検証しましょう。
 
-            {}
+            以下のレビューで言及されたルールについてのみ検証しなさい。
+            このパッチから確実にわかることのみについて言及しなさい。このパッチの範囲外のことを推測で指摘することは避けてください。
 
-            このパッチに対して以下のルールに違反している点がないか確認してください。
-            以下のレビューで言及されたルールについてのみ指摘を行いなさい。
-            また指摘後には revaluation に前述の指摘の内容が正しいかを、指摘文にかかれたこと一つ一つについて、パッチの内容と照らし合わせて適切かどうかを記載しなさい。
-
+            locations には指摘箇所の行番号を記載しなさい。
+            quotation には指摘箇所のコードの重要部分を一部抜粋しなさい。
+            reference には指摘の根拠となるルールを簡単に引用しなさい。
+            suspiciousReason には指摘箇所が疑わしい理由を記載しなさい。
+            noProblemReason には指摘箇所が問題ない理由を記載しなさい。
+            revaluation には suspiciousReason と noProblemReason を踏まえて指摘が適切か再評価しなさい。指摘がパッチから読み取れない推測に基づいている場合は、指摘は適切でないと判断しなさい。
+            message には revaluation を踏まえて指摘内容を記載しなさい。
+            kind では
             指摘がいかなる場合も適切ならば kind を "error" にしなさい。
             指摘が場合によっては適切であるかもしれない場合は kind を "warning" にしなさい。
             指摘が適切でないことが分かった場合は kind を "cancel" に変更しなさい。
@@ -78,12 +83,16 @@ impl<L: LlmClient> Linter<L> {
 
             {{
                 messages: {{
-                    "message": string
                     "location": {{
                         "start_line": number
                         "end_line": number
-                    }}
-                    "reevalution": string
+                    }},
+                    "quotation": string,
+                    "reference": string,
+                    "suspiciousReason": string,
+                    "noProblemReason": string,
+                    "reevalution": string,
+                    "message": string,
                     "kind": "error" | "warning" | "cancel"
                 }}[]
             }}
@@ -93,22 +102,35 @@ impl<L: LlmClient> Linter<L> {
             {{
                 messages: [
                     {{
-                        message: "XXX の箇所は YYY に変更してください。",
                         location: {{ start_line: 10, end_line: 10 }},
+                        quotation: "const huge = XXXX();",
+                        reference: "XXX の代わりに YYY を使うというルールがあります。"
+                        suspiciousReason: "XXX は YYY に変更するべきだが、変更されていない。"
+                        noProblemReason: "XXX は YYY に変更する必要がない。"
                         reevalution: "実際に XXX が使用されているので、YYY に変更する必要があり、コードは誤っているので、この指摘は適切である。",
+                        message: "XXX の箇所は YYY に変更してください。",
                         kind: "error"
                     }},
                     {{
-                        message: "XXX には必ず ZZZ をつけるようにしてください。",
                         location: {{ start_line: 20, end_line: 30 }},
+                        quotation: "const huge = ZZZZ();",
+                        reference: "ZZZ をつけるというルールがあります。"
+                        suspiciousReason: "ZZZ をつけるというルールが有る。"
+                        noProblemReason: "ZZZ はついている。"
                         reevalution: "実際に ZZZ はついているので、コードは正しく、この指摘は不適切である。"
+                        message: "ZZZ がついているので問題ありません。",
                         kind: "cancel"
                     }},
                 ]
             }}
+
+            以下が Git のパッチです。
+
+            {}
+
             "#,
+            rules,
             patch.content_with_path(),
-            rules
         })
     }
 

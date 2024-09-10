@@ -45,7 +45,7 @@ async fn main() {
     let rules = rules::markdown::read(&config.rules_markdown_path);
     let llm_client = llm_clients::openai::OpenAI::new(
         env::var("OPENAI_API_KEY").unwrap_or_else(|_| panic!("OPENAI_API_KEY must be set")),
-        env::var("OPENAI_MODEL").unwrap_or_else(|_| "gpt-4o-mini".to_string()),
+        env::var("OPENAI_MODEL").unwrap_or_else(|_| "gpt-4o".to_string()),
     );
     let linter = core::Linter::new(llm_client, rules);
     let github_patches_client = patches::github::Github::new(

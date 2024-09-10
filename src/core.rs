@@ -44,7 +44,7 @@ impl<L: LlmClient> Linter<L> {
         }
 
         Indications {
-            all: patch_indications,
+            values: patch_indications,
         }
     }
 
@@ -236,15 +236,28 @@ pub struct Rule {
 
 #[derive(Deserialize)]
 pub struct Indications {
-    pub all: Vec<Indication>,
+    pub values: Vec<Indication>,
 }
 
 impl Indications {
-    pub fn exclude_cancel(self) -> Vec<Indication> {
-        self.all
-            .into_iter()
-            .filter(|indication| indication.kind != IndicationKind::Cancel)
-            .collect()
+    pub fn exclude_cancel(self) -> Indications {
+        Indications {
+            values: self
+                .values
+                .into_iter()
+                .filter(|indication| indication.kind != IndicationKind::Cancel)
+                .collect(),
+        }
+    }
+
+    pub fn exclude_warnings(self) -> Indications {
+        Indications {
+            values: self
+                .values
+                .into_iter()
+                .filter(|indication| indication.kind != IndicationKind::Warning)
+                .collect(),
+        }
     }
 }
 

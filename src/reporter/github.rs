@@ -17,7 +17,7 @@ pub struct GithubReporter {
 
 impl Reporter for GithubReporter {
     async fn report(&self, indications: Indications) {
-        for indication in indications.exclude_cancel() {
+        for indication in indications.exclude_cancel().exclude_warnings().values {
             self.comment(indication).await;
             sleep(Duration::from_secs(1)).await;
         }
